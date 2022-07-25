@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jp.kobe_u.cs.daikibo.tsubuyaki.entity.Tsubuyaki;
@@ -29,7 +30,22 @@ public class TsubuyakiController {
         List<Tsubuyaki> list = ts.getAllTsubuyaki(); // 全つぶやきを取得
         model.addAttribute("tsubuyakiList", list); // モデル属性にリストをセット
         model.addAttribute("tsubuyakiForm", new TsubuyakiForm()); // 空フォームをセット
+        model.addAttribute("searchForm", new SearchForm());
         return "tsubuyaki_list"; // リスト画面を返す
+    }
+
+    // 検索結果画面の表示
+    @PostMapping("/search")
+    String showSearchResult(@ModelAttribute("searchForm") SearchForm form, Model model) {
+        String keyword = form.getKeyword();
+        return "redirect:/search/" + keyword;
+    }
+
+    @GetMapping("/search/{keyword}")
+    String showResult(@PathVariable String keyword, Model model) {
+        List<Tsubuyaki> list = ts.getMatchedTsubuyaki(keyword);
+        model.addAttribute("searchList", list);
+        return "search";
     }
 
     // つぶやきを投稿

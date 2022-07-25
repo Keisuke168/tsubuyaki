@@ -34,4 +34,8 @@ public class TsubuyakiService {
         found.forEach(list::add);
         return list;
     }
+
+    public List<Tsubuyaki> getMatchedTsubuyaki(String keyword) {
+        return repo.findByCommentContaining(keyword);
+    }
 }
